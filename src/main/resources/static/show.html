@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>云剪切</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="/css/monokai_sublime.min.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/highlight.min.js"></script>
+    <script src="/js/line-number.js"></script>
+    <style>
+        #content form pre {
+            min-height: 545px;
+            max-height: 545px;
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="margin-top: 10px">
+    <div id="type" class="row">
+        <div style="float: left;">
+            <a type="button" class="btn btn-primary" href="/">首页</a>
+        </div>
+        <div id="delay_li" style="float: right;">
+            <div class="btn-group ">
+                <button type="button" id="publish" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-----------------------------</button>
+                <ul class="dropdown-menu">
+                    <li><a id="delay" href="#">续命 2小时</a href="#"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="content" class="row" style="margin-top: 20px">
+        <form>
+            <pre class="hljs"><code class=""></code></pre>
+        </form>
+    </div>
+</div>
+
+<script>
+    function html_encode(str) {
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&/g, "&amp;");
+        s = s.replace(/</g, "&lt;");
+        s = s.replace(/>/g, "&gt;");
+        s = s.replace(/ /g, "&nbsp;");
+        s = s.replace(/\'/g, "&#39;");
+        s = s.replace(/\"/g, "&quot;");
+        s = s.replace(/\\n/g, "<br>");
+        return s;
+    }
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    };
+
+    $(function () {
+        var showId = location.pathname.substring(1, location.pathname.length)
+        $.ajax({
+            url:"/show.json",
+            data: {
+                id: showId
+            },
+            success: function (data) {
+                if (isEmpty(data)) {
+                    alert("empty!");
+                    return;
+                } else {
+                    $("#delay").attr("leaf-id", data.leaf.id);
+                    $("#content form pre code").html(html_encode(data.leaf.content));
+//                    $("#content form pre code").addClass(data.leaf.noteType.toLowerCase());
+                    $("#publish").html(data.endTime + ' 过期' + ' <span class="caret"></span>');
+                    showLineNumber();
+                    hljs.initHighlighting.called = false;
+                    hljs.initHighlighting();
+                }
+            }
+        })
+    });
+
+    $('#delay').on('click', function () {
+        $.ajax({
+            url: "/delay/" + $('#delay').attr('leaf-id'),
+            success: function (data) {
+                var html = data.msg + " 过期" + ' <span class="caret"></span>';
+                $('#publish').html(html);
+            }
+        })
+    });
+</script>
+
+<script src="/js/bootstrap.min.js"></script>
+</body>
+</html>

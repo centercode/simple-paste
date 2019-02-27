@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>云剪切</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <style>
+        textarea#content {
+            padding-top:0;
+            padding-bottom:0;
+            border-top: 0;
+            border-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="margin-top: 10px">
+    <div class="row">
+        <div style="float: left;">
+            <button id="publish" type="button" class="btn btn-info">发布</button>
+        </div>
+        <div class="dropdown" style="float: right;">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                已发布
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" id="published">
+            </ul>
+        </div>
+    </div>
+    <div id="display" class="row" style="margin-top: 20px">
+        <div type="text">
+            <form><textarea id="content" class="form-control" rows="28"></textarea></form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $.ajax({
+            url:"/getLeafs.json",
+            success: function (data) {
+                if (data && null != data) {
+                    data.forEach(function (id) {
+                        $("#published").append('<li><a href="/' + id + '">' + id + '</a></li>')
+                    })
+                }
+            }
+        })
+    });
+    $('#publish').on('click', function () {
+        $.post(
+                "/save",
+                {
+                    "content": $('#content').val(),
+                    "type": 'TEXT'
+                },
+                function (data, status) {
+                    console.log("status: " + status)
+                    if (data.state == 'success') {
+                        var purl = "/" + data.msg;
+                window.location = purl
+                    } else {
+                        alert(data.reason)
+                    }
+                }
+        )
+    });
+
+    $('#type li').not('#pub_li').on('click', function () {
+        $(this).siblings('.active').removeClass("active");
+        $(this).addClass('active');
+    });
+</script>
+<script src="/js/bootstrap.min.js"></script>
+</body>
+</html>
