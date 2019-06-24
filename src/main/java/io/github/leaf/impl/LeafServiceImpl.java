@@ -18,14 +18,14 @@ public class LeafServiceImpl implements LeafService {
         this.storageService = storageService;
     }
 
-    private static final char[] BASE_LITERAL = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private static final char[] BASE_LITERAL = "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
 
     private String createId() {
         Long id = storageService.getIncrementId();
-        return to64BasedNumber(id);
+        return to36BasedNumber(id);
     }
 
-    String to64BasedNumber(long id) {
+    String to36BasedNumber(long id) {
         int base = BASE_LITERAL.length;
 
         StringBuilder sb = new StringBuilder();
