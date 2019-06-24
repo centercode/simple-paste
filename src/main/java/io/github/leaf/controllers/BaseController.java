@@ -6,6 +6,10 @@ import java.util.Map;
 
 public class BaseController {
 
+    public static final String SUCCESS = "{\"state\":\"success\",\"msg\":\"\"}";
+
+    public static final String ERROR = "{\"state\":\"error\",\"reason\":\"\"}";
+
     protected Map<String, Object> jsonError(String reason) {
         Map<String, Object> map = new HashMap<>();
         map.put("state", "error");

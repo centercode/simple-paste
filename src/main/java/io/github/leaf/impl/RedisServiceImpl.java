@@ -47,7 +47,7 @@ public class RedisServiceImpl implements StorageService {
             uri = uri.replace("${" + key + "}", value);
         }
 
-        logger.info("redis uri:" + uri);
+//        logger.info("redis uri:" + uri.replaceAll(password));
 
         RedisClient client = RedisClient.create(uri);
         StatefulRedisConnection<String, String> connect = client.connect();
@@ -156,8 +156,7 @@ public class RedisServiceImpl implements StorageService {
     @Override
     public void modify(LeafBag leafBag) {
         if (null == leafBag
-                || StringUtils.isBlank(leafBag.getUserId())
-                || CollectionUtils.isEmpty(leafBag.getLeafIds())) {
+                || StringUtils.isBlank(leafBag.getUserId())) {
             return;
         }
 

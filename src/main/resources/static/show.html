@@ -15,19 +15,23 @@
             min-height: 545px;
             max-height: 545px;
         }
+        .rotate180 {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
 <div class="container" style="margin-top: 10px">
     <div id="type" class="row">
         <div style="float: left;">
-            <a type="button" class="btn btn-primary" href="/">首页</a>
+            <a type="button" class="btn btn-primary" href="/">◀ 首页</a>
         </div>
         <div id="delay_li" style="float: right;">
             <div class="btn-group ">
                 <button type="button" id="publish" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-----------------------------</button>
                 <ul class="dropdown-menu">
-                    <li><a id="delay" href="#">续命 2小时</a href="#"></li>
+                    <li><a id="delay" href="#">续命 2小时</a></li>
+                    <li><a id="delete" href="#">销毁</a></li>
                 </ul>
             </div>
         </div>
@@ -69,7 +73,8 @@
             },
             success: function (data) {
                 if (isEmpty(data)) {
-                    alert("empty!");
+                    alert("Note已过期!");
+                    window.location.href = "/";
                     return;
                 } else {
                     $("#delay").attr("leaf-id", data.leaf.id);
@@ -79,6 +84,7 @@
                     showLineNumber();
                     hljs.initHighlighting.called = false;
                     hljs.initHighlighting();
+                    document.title = showId
                 }
             }
         })
@@ -92,6 +98,17 @@
                 $('#publish').html(html);
             }
         })
+    });
+
+    $('#delete').on('click', function () {
+        if (confirm('确定要销毁吗?')) {
+            $.ajax({
+                url: "/delete/" + $('#delay').attr('leaf-id'),
+                success: function (data) {
+                    window.location.href = "/";
+                }
+            });
+        }
     });
 </script>
 

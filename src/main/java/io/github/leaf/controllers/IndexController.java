@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -126,6 +127,20 @@ public class IndexController extends BaseController {
         String format = format(expire);
 
         return jsonSuccess(format);
+    }
+
+    @RequestMapping("delete/{id}")
+    public String delete(HttpServletRequest request, @PathVariable String id) throws Exception {
+        leafService.delete(id);
+
+        String userId = getUserId(request);
+        LeafBag leafBag = userService.getLeafBag(userId);
+        LinkedList<String> idList = Lists.newLinkedList(leafBag.getLeafIds());
+        idList.remove(id);
+        leafBag.setLeafIds(idList);
+        userService.modify(leafBag);
+
+        return SUCCESS;
     }
 
     private String format(Date date) {
