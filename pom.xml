@@ -16,6 +16,7 @@
     <version>1.0.0</version>
 
     <properties>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>16.0.1</version>
+            <version>28.0-jre</version>
         </dependency>
         <dependency>
             <groupId>io.lettuce</groupId>
@@ -59,7 +60,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.2</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -79,7 +80,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>io.github.leaf.MyApplication</mainClass>
+                    <mainClass>io.github.leaf.WebServer</mainClass>
                 </configuration>
             </plugin>
         </plugins>
