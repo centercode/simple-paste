@@ -8,18 +8,18 @@ import io.github.leaf.facade.StorageService;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 @Service
 public class RedisServiceImpl implements StorageService {
@@ -32,23 +32,24 @@ public class RedisServiceImpl implements StorageService {
 
     private static final String CURRENT_ID = "leaf:CURRENT_ID";
 
-    private static RedisCommands<String, String> redis;
+    private RedisCommands<String, String> redis;
 
-    static {
-        redisInit();
-    }
+    @Value("${redis.host}")
+    private String host;
 
-    private static void redisInit() {
-        String uri = "redis://:${password}@${host}:${port}/${database}";
+    @Value("${redis.port}")
+    private String port;
 
-        ResourceBundle bundle = ResourceBundle.getBundle("redis");
-        for (String key : bundle.keySet()) {
-            String value = bundle.getString(key);
-            uri = uri.replace("${" + key + "}", value);
-        }
+    @Value("${redis.password}")
+    private String password;
 
+    @Value("${redis.database}")
+    private String database;
+
+    @PostConstruct
+    public void init() {
+        String uri = "redis://:" + password + "@" + host + ":" + port + "/" + database;
 //        logger.info("redis uri:" + uri.replaceAll(password));
-
         RedisClient client = RedisClient.create(uri);
         StatefulRedisConnection<String, String> connect = client.connect();
         redis = connect.sync();
